@@ -1,4 +1,5 @@
 import random
+from Observer import *
 
 class PrisonersDilemmaAgents:
     def __init__(self, name):
@@ -7,7 +8,7 @@ class PrisonersDilemmaAgents:
         self.score = 0
         self.decision_count = {'C': 0, 'D': 0}
 
-    def make_choice(self):
+    def make_choice(self, decision_against):
         pass
 
     def update_score(self, payoff):
@@ -25,7 +26,7 @@ class PrisonersDilemmaAgents:
 
     @staticmethod 
     def create_agents(n):
-        agent_classes = [RandomAgent, UnconditionalCooperator, UnconditionalDefector, CooperatorP]
+        agent_classes = [RandomAgent, UnconditionalCooperator, UnconditionalDefector, CooperatorP, TitForTat]
         agents = []
         agent_demographics = {}
 
@@ -55,18 +56,18 @@ class RandomAgent(PrisonersDilemmaAgents):
         super().__init__(name)
 
 
-    def make_choice(self):
+    def make_choice(self, decision_against):
         decision =  random.choice(['C', 'D'])
         self.decision_count[decision] += 1
         return decision
 
 class UnconditionalCooperator(PrisonersDilemmaAgents):
-    def make_choice(self):
+    def make_choice(self, decision_against):
         self.decision_count['C'] += 1
         return 'C'
 
 class UnconditionalDefector(PrisonersDilemmaAgents):
-    def make_choice(self):
+    def make_choice(self, decision_against):
         self.decision_count['D'] +=1 
         return 'D'
 
@@ -75,11 +76,21 @@ class CooperatorP(PrisonersDilemmaAgents):
         super().__init__(name)
         self.coopP = p 
     
-    def make_choice(self):
+    def make_choice(self, decision_against):
         if random.uniform(0, 1) < self.coopP:
             return 'C'
         else:
             return 'D'
 
+class TitForTat(PrisonersDilemmaAgents):
+    
+    def __init__(self, name):
+        super().__init__(name)
+     
+    def make_choice(self, decision_against):
+        
+        enemy_agent = decision_against
+        # Tournament.printLastPlay()
+        # print(enemy_agent.name)
 
-
+        return 'C'

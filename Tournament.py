@@ -4,10 +4,14 @@ from Agents import *
 
 class Tournament:
     
-    def __init__(self, agents, num_rounds) -> None:
-        
-        self.agents = agents
+    def __init__(self, num_rounds) -> None:
         self.num_rounds = num_rounds
+        self.last_play_history = {}
+        self.agents = []
+
+
+    def add_agents(self, agents):
+        self.agents = agents
 
     def play_round(self, agent1, agent2):
         pass
@@ -24,14 +28,18 @@ class Tournament:
                 agent1 = self.agents[i]
                 agent2 = self.agents[i + 1]
 
-                choice1 = agent1.make_choice()
-                choice2 = agent2.make_choice()
+                choice1 = agent1.make_choice(agent2)
+                choice2 = agent2.make_choice(agent1)
+
+                self.last_play_history[agent1.name] = choice1
+                self.last_play_history[agent2.name] = choice2
+
 
                 payOff1, payOff2 = self.prisonersDilemma(choice1, choice2)
                 agent1.update_score(payOff1)
                 agent2.update_score(payOff2)
         
-
+    def printFinalScore(self):
         print("\nFinal Scores:")
         for agent in self.agents:
             print("{}: {}".format(agent.name, agent.score))
@@ -48,3 +56,7 @@ class Tournament:
     def printMaxDecisions(self):
         for a in self.agents:
             a.get_average()
+
+    def printLastPlay(self):
+        for k, v in self.last_play_history.items():
+            print(f"Agent {k} chose {v}")
